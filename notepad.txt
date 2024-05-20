@@ -1,0 +1,16 @@
+@keyframes explode {
+  0% {
+    color: rgb(255, 255, 0);
+    transform: scale(1);
+  }
+  50% {
+    color: rgb(255, 127, 0);
+    transform: scale(1.5);
+    opacity: 0.5;
+  }
+  100% {
+    color: red;
+    transform: scale(2);
+    opacity: 0;
+  }
+}
