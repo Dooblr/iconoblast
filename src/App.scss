@@ -1,6 +1,6 @@
 // ./App.scss
 
-@import './components/Enemy/Enemy.scss';
+@import "./components/Enemy/Enemy.scss";
 
 html {
   margin: 0;
@@ -77,37 +77,49 @@ body {
   height: 100%;
 }
 
-.reset-button,
-.pause-button {
+.hud-container {
   position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 10px 20px;
-  background-color: #ff5555;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  margin: 0 10px;
-}
+  top: 90vh;
+  left: 0;
+  display: flex;
+  gap: 1rem;
+  width: 95%;
+  // border: 1px solid red;
+  padding: 1rem;
 
-.pause-button {
-  left: 60%;
-  background-color: #f8e786;
-  color: rgb(0, 0, 0);
-}
+  .points-tracker {
+    margin-right: 1rem;
+    user-select: none;
+  }
 
-.reset-button:hover,
-.pause-button:hover {
-  background-color: #ff0000;
-}
+  button {
+    align-self: center;
+    padding: 1rem;
+    background: lightblue;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1.5rem;
+    height: 56px;
+    cursor: pointer;
+    transition: 0.2s;
 
-.points-tracker {
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
-  font-size: 1.5rem;
-  color: white;
+    &:hover {
+      transform: scale(1.1);
+    }
+    &:active {
+      transform: scale(1.1);
+    }
+  }
+
+  .reset-button {
+    background: rgb(252, 170, 156);
+  }
+
+  .pause-button {
+    background: rgb(251, 251, 149);
+  }
+
+  .play-button {
+    background: lightgreen;
+  }
 }

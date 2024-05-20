@@ -1,4 +1,8 @@
 import { HiArrowCircleUp, HiChevronUp, HiOutlineUser } from "react-icons/hi"
+import { HiMiniPause, HiMiniPlay } from "react-icons/hi2"
+
+import { GrPowerReset } from "react-icons/gr"
+
 import "./App.scss"
 import { useRef, useState, useEffect, useCallback } from "react"
 import Enemy from "./components/Enemy/Enemy"
@@ -24,6 +28,8 @@ const App = () => {
     enemies,
     initializeEnemy,
     removeEnemy,
+    points,
+    setPoints,
   } = useStore()
   const [rotation, setRotation] = useState<number>(0)
   const [projectiles, setProjectiles] = useState<ProjectileData[]>([])
@@ -195,6 +201,7 @@ const App = () => {
     setProjectiles([])
     setProjectileId(0)
     setPlayerHP(10)
+    setPoints(0)
     initializeEnemy("enemy1", { x: 100, y: 200 }) // Reinitialize first enemy
     initializeEnemy("enemy2", { x: 200, y: 300 }) // Reinitialize second enemy
   }
@@ -215,7 +222,7 @@ const App = () => {
             Icon={HiOutlineUser}
             position={enemies[enemyId]}
             onDeath={() => {
-              removeEnemy(enemyId)
+              setPoints(points + 1)
             }}
           />
         ))}
@@ -273,12 +280,16 @@ const App = () => {
           />
         ))}
 
-        <button className="reset-button" onClick={resetGame}>
-          Reset
-        </button>
-        <button className="pause-button" onClick={togglePause}>
-          {isPaused ? "Resume" : "Pause"}
-        </button>
+        <div className="hud-container">
+          <h1 className="points-tracker">Points: {points}</h1>
+          <div style={{flexGrow:'2'}}/>
+          <button className="reset-button" onClick={resetGame}>
+            <GrPowerReset />
+          </button>
+          <button className="pause-button" onClick={togglePause}>
+            {isPaused ? <HiMiniPlay /> : <HiMiniPause />}
+          </button>
+        </div>
       </div>
     </>
   )

@@ -9,6 +9,8 @@ interface Position {
 }
 
 interface StoreState {
+  points: number
+  setPoints: (newPoints:number) => void
   playerPosition: Position
   setPlayerPosition: (position: Position) => void
   playerHP: number
@@ -23,6 +25,8 @@ interface StoreState {
 }
 
 const useStore = create<StoreState>((set, get) => ({
+  points: 0,
+  setPoints: (newPoints: number) => set({ points: newPoints }),
   playerPosition: { x: window.innerWidth / 2, y: window.innerHeight / 2 },
   setPlayerPosition: (position) => set({ playerPosition: position }),
   playerHP: 10,
@@ -42,8 +46,8 @@ const useStore = create<StoreState>((set, get) => ({
     set((state) => ({
       enemies: { ...state.enemies, [id]: { x: position.x, y: position.y } },
     })),
-
   moveEnemies: () => {
+    //@ts-ignore
     set((state) => {
       if (state.isPaused) return
       const { playerPosition, enemies } = state
