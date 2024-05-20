@@ -37,7 +37,7 @@ const Enemy: React.FC<EnemyProps> = ({
     }
   }, [currentHealth])
 
-  // Explosion animation trigger, then remove enemy element
+  // Explosion animation trigger then remove enemy element
   useEffect(() => {
     if (currentHealth === 0) {
       setIsExploding(true)
