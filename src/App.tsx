@@ -1,3 +1,5 @@
+// App.tsx
+
 import { HiArrowCircleUp, HiChevronUp, HiOutlineUser } from "react-icons/hi";
 import { HiMiniPause, HiMiniPlay } from "react-icons/hi2";
 import { GrPowerReset } from "react-icons/gr";
@@ -10,6 +12,7 @@ import HUD from "./components/HUD/HUD";
 import useCollisionDetection from "./hooks/useCollisionDetection";
 import useProjectileManagement from "./hooks/useProjectileManagement";
 import usePlayerMovement from "./hooks/usePlayerMovement";
+import useWebAudioBackgroundMusic from "./hooks/useWebAudioBackgroundMusic";
 
 const App = () => {
   const playerRef = useRef<HTMLDivElement>(null);
@@ -40,6 +43,7 @@ const App = () => {
   );
 
   useCollisionDetection(projectiles, setProjectiles, isPaused);
+  useWebAudioBackgroundMusic(isPaused);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -52,8 +56,6 @@ const App = () => {
   }, [moveEnemies, isPaused]);
 
   const resetGame = () => {
-    setPlayerPosition({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
-    setRotation(0);
     setProjectiles([]);
     setPlayerHP(10);
     setPoints(0);

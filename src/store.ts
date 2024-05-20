@@ -1,29 +1,29 @@
 // ./store.ts
 
-import create from "zustand";
-import { moveTowardsTarget } from "./utils/movement";
+import create from "zustand"
+import { moveTowardsTarget } from "./utils/movement"
 
 interface Position {
-  x: number;
-  y: number;
+  x: number
+  y: number
 }
 
 interface StoreState {
-  points: number;
-  setPoints: (newPoints: number) => void;
-  playerPosition: Position;
-  setPlayerPosition: (position: Position) => void;
-  playerHP: number;
-  setPlayerHP: (hp: number) => void;
-  rotation: number;
-  setRotation: (rotation: number) => void;
-  enemies: { [id: string]: Position };
-  setEnemyPosition: (id: string, position: Position) => void;
-  removeEnemy: (id: string) => void;
-  initializeEnemy: (id: string, position: Position) => void;
-  moveEnemies: () => void;
-  isPaused: boolean;
-  togglePause: () => void;
+  points: number
+  setPoints: (newPoints: number) => void
+  playerPosition: Position
+  setPlayerPosition: (position: Position) => void
+  playerHP: number
+  setPlayerHP: (hp: number) => void
+  rotation: number
+  setRotation: (rotation: number) => void
+  enemies: { [id: string]: Position }
+  setEnemyPosition: (id: string, position: Position) => void
+  removeEnemy: (id: string) => void
+  initializeEnemy: (id: string, position: Position) => void
+  moveEnemies: () => void
+  isPaused: boolean
+  togglePause: () => void
 }
 
 const useStore = create<StoreState>((set, get) => ({
@@ -42,9 +42,9 @@ const useStore = create<StoreState>((set, get) => ({
     })),
   removeEnemy: (id) =>
     set((state) => {
-      const newEnemies = { ...state.enemies };
-      delete newEnemies[id];
-      return { enemies: newEnemies };
+      const newEnemies = { ...state.enemies }
+      delete newEnemies[id]
+      return { enemies: newEnemies }
     }),
   initializeEnemy: (id, position) =>
     set((state) => ({
@@ -52,25 +52,25 @@ const useStore = create<StoreState>((set, get) => ({
     })),
   moveEnemies: () => {
     set((state) => {
-      if (state.isPaused) return;
-      const { playerPosition, enemies } = state;
-      const newEnemies = { ...enemies };
+      if (state.isPaused) return state // Return the current state if paused
+      const { playerPosition, enemies } = state
+      const newEnemies = { ...enemies }
       Object.keys(newEnemies).forEach((id) => {
-        const enemy = newEnemies[id];
+        const enemy = newEnemies[id]
         const newPos = moveTowardsTarget(
           enemy.x,
           enemy.y,
           playerPosition.x,
           playerPosition.y,
           1 // Adjust speed to make it slower and smoother
-        );
-        newEnemies[id] = newPos;
-      });
-      return { enemies: newEnemies };
-    });
+        )
+        newEnemies[id] = newPos
+      })
+      return { enemies: newEnemies }
+    })
   },
   isPaused: false,
   togglePause: () => set((state) => ({ isPaused: !state.isPaused })),
-}));
+}))
 
-export default useStore;
+export default useStore
