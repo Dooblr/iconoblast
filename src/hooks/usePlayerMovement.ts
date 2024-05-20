@@ -1,12 +1,14 @@
+// ./hooks/usePlayerMovement.ts
+
 import { useCallback } from 'react';
 import useStore from '../store';
 
 const usePlayerMovement = (isPaused: boolean, playerRef: React.RefObject<HTMLDivElement>) => {
-  const { setPlayerPosition } = useStore();
+  const { setPlayerPosition, setRotation } = useStore();
 
   const handleClick = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
-      if (isPaused) return;
+      if (isPaused || !playerRef.current) return;
 
       const target = e.target as HTMLElement;
 
@@ -15,7 +17,7 @@ const usePlayerMovement = (isPaused: boolean, playerRef: React.RefObject<HTMLDiv
       }
 
       const targetRect = e.currentTarget.getBoundingClientRect();
-      const iconRect = playerRef.current!.getBoundingClientRect();
+      const iconRect = playerRef.current.getBoundingClientRect();
 
       const targetX = e.clientX - targetRect.left;
       const targetY = e.clientY - targetRect.top;
@@ -28,6 +30,8 @@ const usePlayerMovement = (isPaused: boolean, playerRef: React.RefObject<HTMLDiv
 
       const angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
 
+      setRotation(angle + 90); // Adjusting the angle to align with the top of the icon
+
       // Use requestAnimationFrame for smooth animation
       const movePlayer = () => {
         setPlayerPosition({
@@ -38,7 +42,7 @@ const usePlayerMovement = (isPaused: boolean, playerRef: React.RefObject<HTMLDiv
 
       requestAnimationFrame(movePlayer);
     },
-    [setPlayerPosition, isPaused, playerRef]
+    [setPlayerPosition, setRotation, isPaused, playerRef]
   );
 
   return handleClick;

@@ -1,84 +1,69 @@
-import { HiArrowCircleUp, HiChevronUp, HiOutlineUser } from "react-icons/hi"
-import { HiMiniPause, HiMiniPlay } from "react-icons/hi2"
-
-import { GrPowerReset } from "react-icons/gr"
-
-import "./App.scss"
-import { useRef, useState, useEffect, useCallback } from "react"
-import Enemy from "./components/Enemy/Enemy"
-import Projectile from "./components/Projectile/Projectile"
-import useStore from "./store"
-import HUD from "./components/HUD/HUD"
-import useCollisionDetection from "./hooks/useCollisionDetection"
-import useProjectileManagement from "./hooks/useProjectileManagement"
-import usePlayerMovement from "./hooks/usePlayerMovement"
-
-interface ProjectileData {
-  id: number
-  x: number
-  y: number
-  rotation: number
-  vx: number
-  vy: number
-}
+import { HiArrowCircleUp, HiChevronUp, HiOutlineUser } from "react-icons/hi";
+import { HiMiniPause, HiMiniPlay } from "react-icons/hi2";
+import { GrPowerReset } from "react-icons/gr";
+import "./App.scss";
+import { useRef, useState, useEffect } from "react";
+import Enemy from "./components/Enemy/Enemy";
+import Projectile from "./components/Projectile/Projectile";
+import useStore from "./store";
+import HUD from "./components/HUD/HUD";
+import useCollisionDetection from "./hooks/useCollisionDetection";
+import useProjectileManagement from "./hooks/useProjectileManagement";
+import usePlayerMovement from "./hooks/usePlayerMovement";
 
 const App = () => {
-  const playerRef = useRef<HTMLDivElement>(null)
-  const firePointRef = useRef<HTMLDivElement>(null)
+  const playerRef = useRef<HTMLDivElement>(null);
+  const firePointRef = useRef<HTMLDivElement>(null);
   const {
     playerPosition,
-    setPlayerPosition,
     moveEnemies,
     enemies,
     initializeEnemy,
     points,
     setPoints,
-  } = useStore()
-  const [rotation, setRotation] = useState<number>(0)
-  // const [projectiles, setProjectiles] = useState<ProjectileData[]>([])
-  const [projectileId, setProjectileId] = useState<number>(0)
-  const [playerHP, setPlayerHP] = useState<number>(10) // Player health state
-  const [isPaused, setIsPaused] = useState<boolean>(false) // Pause state
+    rotation,
+  } = useStore();
+  const [playerHP, setPlayerHP] = useState<number>(10); // Player health state
+  const [isPaused, setIsPaused] = useState<boolean>(false); // Pause state
 
   useEffect(() => {
-    initializeEnemy("enemy1", { x: 100, y: 200 }) // Initialize first enemy
-    initializeEnemy("enemy2", { x: 200, y: 300 }) // Initialize second enemy
-  }, [initializeEnemy])
+    initializeEnemy("enemy1", { x: 100, y: 200 }); // Initialize first enemy
+    initializeEnemy("enemy2", { x: 200, y: 300 }); // Initialize second enemy
+  }, [initializeEnemy]);
 
-  const handleClick = usePlayerMovement(isPaused, playerRef)
+  const handleClick = usePlayerMovement(isPaused, playerRef);
 
   const { projectiles, setProjectiles } = useProjectileManagement(
     rotation,
     playerRef,
     isPaused
-  )
+  );
 
-  useCollisionDetection(projectiles, setProjectiles, isPaused)
+  useCollisionDetection(projectiles, setProjectiles, isPaused);
 
   useEffect(() => {
     const interval = setInterval(() => {
       if (!isPaused) {
-        moveEnemies()
+        moveEnemies();
       }
-    }, 100) // Move enemies every 100ms
+    }, 100); // Move enemies every 100ms
 
-    return () => clearInterval(interval)
-  }, [moveEnemies, isPaused])
+    return () => clearInterval(interval);
+  }, [moveEnemies, isPaused]);
 
   const resetGame = () => {
-    setPlayerPosition({ x: window.innerWidth / 2, y: window.innerHeight / 2 })
-    setRotation(0)
-    setProjectiles([])
-    setProjectileId(0)
-    setPlayerHP(10)
-    setPoints(0)
-    initializeEnemy("enemy1", { x: 100, y: 200 }) // Reinitialize first enemy
-    initializeEnemy("enemy2", { x: 200, y: 300 }) // Reinitialize second enemy
-  }
+    setPlayerPosition({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
+    setRotation(0);
+    setProjectiles([]);
+    setPlayerHP(10);
+    setPoints(0);
+    initializeEnemy("enemy1", { x: 100, y: 200 }); // Reinitialize first enemy
+    initializeEnemy("enemy2", { x: 200, y: 300 }); // Reinitialize second enemy
+  };
 
   const togglePause = () => {
-    setIsPaused((prev) => !prev)
-  }
+    setIsPaused((prev) => !prev);
+  };
 
   return (
     <>
@@ -92,7 +77,7 @@ const App = () => {
             Icon={HiOutlineUser}
             position={enemies[enemyId]}
             onDeath={() => {
-              setPoints(points + 1)
+              setPoints(points + 1);
             }}
           />
         ))}
@@ -150,14 +135,10 @@ const App = () => {
           />
         ))}
 
-        <HUD
-          resetGame={resetGame}
-          togglePause={togglePause}
-          isPaused={isPaused}
-        />
+        <HUD resetGame={resetGame} togglePause={togglePause} isPaused={isPaused} />
       </div>
     </>
-  )
-}
+  );
+};
 
-export default App
+export default App;
