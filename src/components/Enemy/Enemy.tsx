@@ -3,6 +3,8 @@ import { IconType } from "react-icons"
 import "./Enemy.scss"
 import useStore from "../../store"
 import Explosion from "../Explosion/Explosion"
+import AudioEngine from "../../audio/AudioEngine"
+import explosionSound from "../../assets/audio/explosion.mp3"
 
 interface EnemyProps {
   maxHealth: number
@@ -33,6 +35,7 @@ const Enemy: React.FC<EnemyProps> = ({
   // Callback at the point of death
   useEffect(() => {
     if (currentHealth === 0) {
+      AudioEngine.playSound(explosionSound) // Play explosion sound
       onDeath()
     }
   }, [currentHealth])

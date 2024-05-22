@@ -1,0 +1,26 @@
+// ./components/LandingScreen/LandingScreen.scss
+
+@import '../../styles/styleVariables.scss';
+
+.landing-screen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: $backgroundColor;
+}
+
+.play-button {
+  padding: 1rem 2rem;
+  font-size: 2rem;
+  border: none;
+  border-radius: 0.5rem;
+  background-color: #ff9a9a;
+  color: #fff;
+  cursor: pointer;
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+}

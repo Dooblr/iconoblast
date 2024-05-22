@@ -24,6 +24,8 @@ interface StoreState {
   moveEnemies: () => void
   isPaused: boolean
   togglePause: () => void
+  currentPage: string
+  setCurrentPage: (page: string) => void
 }
 
 const useStore = create<StoreState>((set, get) => ({
@@ -71,6 +73,8 @@ const useStore = create<StoreState>((set, get) => ({
   },
   isPaused: false,
   togglePause: () => set((state) => ({ isPaused: !state.isPaused })),
+  currentPage: "landing",
+  setCurrentPage: (page: string) => set({ currentPage: page }),
 }))
 
 export default useStore
