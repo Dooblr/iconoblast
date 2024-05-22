@@ -1,1 +1,13 @@
 // ./components/Projectile/Projectile.scss
+
+.projectile {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.projectile-icon {
+  width: 100%;
+  height: 100%;
+}

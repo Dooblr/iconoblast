@@ -1,8 +1,10 @@
-// ./components/Projectile/Projectile.tsx
+// src/components/Projectile/Projectile.tsx
 
-import { IconType } from 'react-icons'
-import { motion } from 'framer-motion'
-import './Projectile.scss'
+import { IconType } from "react-icons"
+import { motion } from "framer-motion"
+import { useEffect } from "react"
+import "./Projectile.scss"
+import AudioEngine from "../../audio/AudioEngine"
 
 interface ProjectileProps {
   id: number
@@ -13,14 +15,31 @@ interface ProjectileProps {
   vy: number
   icon: IconType
   size: string
+  audioSrc: string
 }
 
-const Projectile: React.FC<ProjectileProps> = ({ id, x, y, rotation, icon: Icon, size }) => {
+const Projectile: React.FC<ProjectileProps> = ({
+  id,
+  x,
+  y,
+  rotation,
+  icon: Icon,
+  size,
+  audioSrc,
+}) => {
+  useEffect(() => {
+    const playAudio = async () => {
+      await AudioEngine.playSound(audioSrc)
+    }
+
+    playAudio()
+  }, [audioSrc])
+
   return (
     <motion.div
-      className='projectile'
+      className="projectile"
       style={{
-        position: 'absolute',
+        position: "absolute",
         left: x,
         top: y,
         transform: `rotate(${rotation}deg)`,

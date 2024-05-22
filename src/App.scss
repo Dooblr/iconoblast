@@ -21,7 +21,7 @@ body {
 .container {
   position: relative;
   width: 100vw;
-  height: 99.75vh;
+  height: 90vh;
   max-width: 99.75vw;
   max-height: 100vh;
   display: flex;
@@ -79,14 +79,14 @@ body {
 }
 
 .hud-container {
-  position: absolute;
-  top: 90vh;
+  position: fixed;
+  bottom: 1rem;
   left: 0;
   display: flex;
   gap: 1rem;
   width: 95%;
-  // border: 1px solid red;
   padding: 1rem;
+  // border: 1px solid red;
 
   .points-tracker {
     margin-right: 1rem;
@@ -123,4 +123,20 @@ body {
   .play-button {
     background: lightgreen;
   }
+}
+
+.beat-indicator {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 20px;
+  height: 20px;
+  background-color: red;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.1s ease;
+}
+
+.beat-indicator.active {
+  opacity: 1;
 }

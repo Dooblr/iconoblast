@@ -1,3 +1,5 @@
+// ./hooks/useProjectileManagement.ts
+
 import { useEffect, useState } from "react"
 
 interface ProjectileData {
@@ -12,7 +14,8 @@ interface ProjectileData {
 const useProjectileManagement = (
   rotation: number,
   playerRef: React.RefObject<HTMLDivElement>,
-  isPaused: boolean
+  isPaused: boolean,
+  fireRate: number
 ) => {
   const [projectiles, setProjectiles] = useState<ProjectileData[]>([])
   const [projectileId, setProjectileId] = useState<number>(0)
@@ -51,10 +54,10 @@ const useProjectileManagement = (
 
     const interval = setInterval(() => {
       shootProjectile()
-    }, 1000) // Fire projectiles every second
+    }, fireRate) // Use the fireRate parameter
 
     return () => clearInterval(interval)
-  }, [rotation, projectileId, playerRef, isPaused])
+  }, [rotation, projectileId, playerRef, isPaused, fireRate])
 
   useEffect(() => {
     const moveProjectiles = () => {
