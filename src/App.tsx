@@ -1,21 +1,17 @@
 // App.tsx
 
+import { useEffect, useRef, useState } from "react"
 import { HiArrowCircleUp, HiChevronUp, HiOutlineUser } from "react-icons/hi"
-import { HiMiniPause, HiMiniPlay } from "react-icons/hi2"
-import { GrPowerReset } from "react-icons/gr"
 import "./App.scss"
-import { useRef, useState, useEffect } from "react"
-import Enemy from "./components/Enemy/Enemy"
-import Projectile from "./components/Projectile/Projectile"
-import useStore from "./store"
-import HUD from "./components/HUD/HUD"
-import useCollisionDetection from "./hooks/useCollisionDetection"
-import useProjectileManagement from "./hooks/useProjectileManagement"
-import usePlayerMovement from "./hooks/usePlayerMovement"
-import useWebAudioBackgroundMusic from "./hooks/useWebAudioBackgroundMusic"
 import shootSound from "./assets/audio/shoot.mp3"
-import backgroundMusic from "./assets/audio/music.mp3"
-import useBackgroundMusic from "./hooks/useBackgroundMusic"
+import Enemy from "./components/Enemy/Enemy"
+import HUD from "./components/HUD/HUD"
+import Projectile from "./components/Projectile/Projectile"
+import useCollisionDetection from "./hooks/useCollisionDetection"
+import usePlayerMovement from "./hooks/usePlayerMovement"
+import useProjectileManagement from "./hooks/useProjectileManagement"
+import useWebAudioBackgroundMusic from "./hooks/useWebAudioBackgroundMusic"
+import useStore from "./store"
 
 const App = () => {
   const playerRef = useRef<HTMLDivElement>(null)

@@ -1,0 +1,73 @@
+.hud-container {
+  position: fixed;
+  bottom: 1rem;
+  left: 0;
+  display: flex;
+  gap: 1rem;
+  width: 95%;
+  padding: 1rem;
+  // border: 1px solid red;
+
+  .points-tracker {
+    margin-left: 5%;
+    user-select: none;
+
+    &.shimmer {
+      background: linear-gradient(
+        90deg,
+        #ff9a9a,
+        #ffd27a,
+        #b3ffab,
+        #a3ffff,
+        #a3a3ff,
+        #d1a3ff,
+        #ff9ae7
+      );
+      background-size: 400%;
+      color: transparent;
+      -webkit-background-clip: text;
+      background-clip: text;
+      animation: shimmer 20s linear infinite;
+    }
+  }
+
+  button {
+    align-self: center;
+    padding: 1rem;
+    background: lightblue;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1.5rem;
+    height: 56px;
+    cursor: pointer;
+    transition: 0.2s;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+    &:active {
+      transform: scale(1.1);
+    }
+  }
+
+  .reset-button {
+    background: rgb(252, 170, 156);
+  }
+
+  .pause-button {
+    background: rgb(251, 251, 149);
+  }
+
+  .play-button {
+    background: lightgreen;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 0%;
+  }
+  100% {
+    background-position: 400%;
+  }
+}
