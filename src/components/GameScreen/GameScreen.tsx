@@ -1,5 +1,3 @@
-// App.tsx
-
 import { useEffect, useRef, useState } from "react"
 import { HiArrowCircleUp, HiChevronUp, HiOutlineUser } from "react-icons/hi"
 import "../../App.scss"
@@ -12,8 +10,9 @@ import usePlayerMovement from "../../hooks/usePlayerMovement"
 import useProjectileManagement from "../../hooks/useProjectileManagement"
 import useWebAudioBackgroundMusic from "../../hooks/useWebAudioBackgroundMusic"
 import useStore from "../../store"
+import Explosion from "../Explosion/Explosion"
 
-const App = () => {
+const GameScreen = () => {
   const playerRef = useRef<HTMLDivElement>(null)
   const firePointRef = useRef<HTMLDivElement>(null)
   const {
@@ -27,6 +26,8 @@ const App = () => {
   } = useStore()
   const [playerHP, setPlayerHP] = useState<number>(10) // Player health state
   const [isPaused, setIsPaused] = useState<boolean>(false) // Pause state
+
+  const previousEnemies = useRef(enemies)
 
   useEffect(() => {
     initializeEnemy("enemy1", { x: 100, y: 200 }) // Initialize first enemy
@@ -46,7 +47,6 @@ const App = () => {
 
   useCollisionDetection(projectiles, setProjectiles, isPaused)
   useWebAudioBackgroundMusic(isPaused)
-  
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -70,20 +70,57 @@ const App = () => {
     setIsPaused((prev) => !prev)
   }
 
+  // State for explosion coordinates and key
+  const [explosions, setExplosions] = useState<
+    { key: number; x: number; y: number }[]
+  >([])
+  const explosionKey = useRef<number>(0)
+
+  const handleExplosion = (x: number, y: number) => {
+    explosionKey.current += 1
+    setExplosions((prevExplosions) => [
+      ...prevExplosions,
+      { key: explosionKey.current, x, y },
+    ])
+  }
+
+  const handleEnemyDeath = (coords: { x: number; y: number }) => {
+    setPoints(points + 1)
+    handleExplosion(coords.x - 20, coords.y - 10)
+  }
+
+  useEffect(() => {
+    if (previousEnemies.current.length !== enemies.length) {
+      console.log("Enemies count changed:", enemies)
+      const removedEnemy = previousEnemies.current.find(
+        (enemy) => !enemies.some((e) => e.id === enemy.id)
+      )
+      if (removedEnemy) {
+        console.log("Enemy removed:", removedEnemy)
+      }
+      previousEnemies.current = enemies
+    }
+  }, [enemies])
+
   return (
     <>
+      {explosions.map((explosion) => (
+        <Explosion
+          x={explosion.x}
+          y={explosion.y}
+          size={"50px"}
+          key={explosion.key}
+        />
+      ))}
       <div className="container" onClick={handleClick}>
-        {Object.keys(enemies).map((enemyId) => (
+        {enemies.map((enemy) => (
           <Enemy
-            key={enemyId}
-            id={enemyId}
+            key={enemy.id}
+            id={enemy.id}
             maxHealth={10}
             size="5rem"
             Icon={HiOutlineUser}
-            position={enemies[enemyId]}
-            onDeath={() => {
-              setPoints(points + 1)
-            }}
+            onDeath={handleEnemyDeath}
           />
         ))}
         <div
@@ -151,4 +188,4 @@ const App = () => {
   )
 }
 
-export default App
+export default GameScreen

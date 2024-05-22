@@ -4,15 +4,15 @@ import "./Enemy.scss"
 import useStore from "../../store"
 import Explosion from "../Explosion/Explosion"
 import AudioEngine from "../../audio/AudioEngine"
-import explosionSound from "../../assets/audio/explosion.mp3"
+import explosionSound from "../../assets/audio/explosion.mp3" // Import the explosion sound
+import impactSound from "../../assets/audio/enemy_impact.mp3" // Import the impact sound
 
 interface EnemyProps {
   maxHealth: number
   size: string
   Icon: IconType
-  onDeath: () => void
+  onDeath: (coords: { x: number; y: number }) => void
   id: string
-  position: any
 }
 
 const Enemy: React.FC<EnemyProps> = ({
@@ -25,37 +25,30 @@ const Enemy: React.FC<EnemyProps> = ({
   const enemyRef = useRef<HTMLDivElement>(null)
   const [currentHealth, setCurrentHealth] = useState<number>(maxHealth)
   const [isHit, setIsHit] = useState<boolean>(false)
-  const [isExploding, setIsExploding] = useState<boolean>(false)
-  const [explosionCoords, setExplosionCoords] = useState<{
-    x: number
-    y: number
-  } | null>(null)
-  const { enemies, removeEnemy } = useStore()
+  const { enemies, removeEnemy, checkAndSpawnNewEnemy } = useStore()
 
-  // Callback at the point of death
   useEffect(() => {
     if (currentHealth === 0) {
+      const enemyElement = enemyRef.current
+      let coords = { x: 0, y: 0 }
+      if (enemyElement) {
+        const rect = enemyElement.getBoundingClientRect()
+        coords = {
+          x: rect.left + rect.width / 2,
+          y: rect.top + rect.height / 2,
+        }
+      }
+      onDeath(coords)
+      removeEnemy(id)
+      checkAndSpawnNewEnemy()
       AudioEngine.playSound(explosionSound) // Play explosion sound
-      onDeath()
     }
-  }, [currentHealth])
-
-  // Explosion animation trigger then remove enemy element
-  useEffect(() => {
-    if (currentHealth === 0) {
-      setIsExploding(true)
-      const coords = { x: enemies[id]?.x, y: enemies[id]?.y }
-      setExplosionCoords(coords)
-      setTimeout(() => {
-        setIsExploding(false)
-        removeEnemy(id)
-      }, 3000) // Explosion lasts 3 seconds
-    }
-  }, [currentHealth, removeEnemy, id, enemies])
+  }, [currentHealth, id, onDeath, removeEnemy, checkAndSpawnNewEnemy])
 
   const handleHit = () => {
     setIsHit(true)
     setCurrentHealth((health) => Math.max(health - 1, 0))
+    AudioEngine.playSound(impactSound) // Play impact sound when enemy is hit
     setTimeout(() => setIsHit(false), 200) // Flash red for 200ms
   }
 
@@ -70,32 +63,31 @@ const Enemy: React.FC<EnemyProps> = ({
     }
   }, [])
 
+  const enemy = enemies.find((e) => e.id === id)
+
+  if (!enemy) return null
+
   return (
     <>
-      {!isExploding && (
-        <div
-          className="enemy"
-          ref={enemyRef}
-          style={{
-            left: `${enemies[id]?.x}px`,
-            top: `${enemies[id]?.y}px`,
-          }}
-        >
-          <div className="enemy-health-bar">
-            <div
-              className="enemy-health-bar-inner"
-              style={{ width: `${(currentHealth / maxHealth) * 100}%` }}
-            />
-          </div>
-          <Icon
-            className={`enemy-icon ${isHit ? "hit" : ""}`}
-            style={{ width: size, height: size }}
+      <div
+        className="enemy"
+        ref={enemyRef}
+        style={{
+          left: `${enemy.position.x}px`,
+          top: `${enemy.position.y}px`,
+        }}
+      >
+        <div className="enemy-health-bar">
+          <div
+            className="enemy-health-bar-inner"
+            style={{ width: `${(currentHealth / maxHealth) * 100}%` }}
           />
         </div>
-      )}
-      {isExploding && explosionCoords && (
-        <Explosion x={explosionCoords.x} y={explosionCoords.y} size="5rem" />
-      )}
+        <Icon
+          className={`enemy-icon ${isHit ? "hit" : ""}`}
+          style={{ width: size, height: size }}
+        />
+      </div>
     </>
   )
 }

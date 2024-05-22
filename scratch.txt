@@ -1,0 +1,13 @@
+// State for explosion coordinates and key
+  const [explosions, setExplosions] = useState<
+    { key: number; x: number; y: number }[]
+  >([])
+  const explosionKey = useRef<number>(0)
+
+  const handleExplosion = (x: number, y: number) => {
+    explosionKey.current += 1
+    setExplosions((prevExplosions) => [
+      ...prevExplosions,
+      { key: explosionKey.current, x, y },
+    ])
+  }

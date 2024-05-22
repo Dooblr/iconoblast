@@ -3,21 +3,24 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  animation: explode 3s forwards;
+  animation: explosionAnimation 1s ease-out forwards;
+  z-index: 100;
+
+  .explosion-icon {
+    width: 100%;
+    height: 100%;
+    // color: red;
+  }
 }
 
-.explosion-icon {
-  color: rgb(255, 255, 0);
-  font-size: 5rem; // Adjust size as necessary
-}
-
-@keyframes explode {
+@keyframes explosionAnimation {
   0% {
-    color: rgb(255, 255, 0);
+    color:yellow;
     transform: scale(1);
+    opacity: 1;
   }
   100% {
-    color: red;
+    color:red;
     transform: scale(2);
     opacity: 0;
   }
