@@ -2,15 +2,15 @@ import { useEffect, useRef, useState } from "react"
 import { HiArrowCircleUp, HiChevronUp, HiOutlineUser } from "react-icons/hi"
 import "../../App.scss"
 import shootSound from "../../assets/audio/shoot.mp3"
-import Enemy from "../Enemy/Enemy"
-import HUD from "../HUD/HUD"
-import Projectile from "../Projectile/Projectile"
 import useCollisionDetection from "../../hooks/useCollisionDetection"
 import usePlayerMovement from "../../hooks/usePlayerMovement"
 import useProjectileManagement from "../../hooks/useProjectileManagement"
 import useWebAudioBackgroundMusic from "../../hooks/useWebAudioBackgroundMusic"
 import useStore from "../../store"
+import Enemy from "../Enemy/Enemy"
 import Explosion from "../Explosion/Explosion"
+import HUD from "../HUD/HUD"
+import Projectile from "../Projectile/Projectile"
 
 const GameScreen = () => {
   const playerRef = useRef<HTMLDivElement>(null)
@@ -23,7 +23,6 @@ const GameScreen = () => {
     points,
     setPoints,
     rotation,
-    setPlayerPosition,
   } = useStore()
   const [playerHP, setPlayerHP] = useState<number>(10) // Player health state
   const [isPaused, setIsPaused] = useState<boolean>(false) // Pause state
@@ -48,7 +47,14 @@ const GameScreen = () => {
     fireRate
   )
 
-  useCollisionDetection(projectiles, setProjectiles, isPaused, playerRef, setPlayerHP, playerHP)
+  useCollisionDetection(
+    projectiles,
+    setProjectiles,
+    isPaused,
+    playerRef,
+    setPlayerHP,
+    playerHP
+  )
   useWebAudioBackgroundMusic(isPaused)
 
   useEffect(() => {

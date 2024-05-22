@@ -2,7 +2,10 @@
 
 import React from "react"
 import useStore from "../../store"
-import { CiPlay1 } from "react-icons/ci";
+import { CiPlay1 } from "react-icons/ci"
+import { FaPlay } from "react-icons/fa"
+import gameLogo from "../../assets/images/logo.svg"
+
 import "./LandingScreen.scss"
 
 const LandingScreen: React.FC = () => {
@@ -14,8 +17,16 @@ const LandingScreen: React.FC = () => {
 
   return (
     <div className="landing-screen">
+      <img
+        src={gameLogo}
+        style={{ filter: "invert(1)", marginBottom: "3rem" }}
+        width={400}
+      />
       <button className="play-button" onClick={handlePlay}>
-        <CiPlay1 className="play-icon" style={{transform:'translateY(15%)'}}/>
+        <FaPlay
+          className="play-icon"
+          style={{ transform: "translateY(15%)" }}
+        />
       </button>
     </div>
   )
