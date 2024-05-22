@@ -1,7 +1,5 @@
-// ./App.scss
-
 @import "./components/Enemy/Enemy.scss";
-@import './styles/styleVariables.scss';
+@import "./styles/styleVariables.scss";
 
 html {
   margin: 0;
@@ -36,6 +34,11 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  transition: background-color 0.2s ease;
+}
+
+.player-wrapper.flashing {
+  background-color: red;
 }
 
 .player-icon-wrapper {

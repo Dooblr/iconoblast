@@ -23,15 +23,18 @@ const GameScreen = () => {
     points,
     setPoints,
     rotation,
+    setPlayerPosition,
   } = useStore()
   const [playerHP, setPlayerHP] = useState<number>(10) // Player health state
   const [isPaused, setIsPaused] = useState<boolean>(false) // Pause state
+  const [isFlashing, setIsFlashing] = useState<boolean>(false) // Flashing state
 
   const previousEnemies = useRef(enemies)
 
   useEffect(() => {
     initializeEnemy("enemy1", { x: 100, y: 200 }) // Initialize first enemy
     initializeEnemy("enemy2", { x: 200, y: 300 }) // Initialize second enemy
+    initializeEnemy("enemy3", { x: 500, y: 300 }) // Initialize third enemy
   }, [initializeEnemy])
 
   const handleClick = usePlayerMovement(isPaused, playerRef)
@@ -45,7 +48,7 @@ const GameScreen = () => {
     fireRate
   )
 
-  useCollisionDetection(projectiles, setProjectiles, isPaused)
+  useCollisionDetection(projectiles, setProjectiles, isPaused, playerRef, setPlayerHP, playerHP)
   useWebAudioBackgroundMusic(isPaused)
 
   useEffect(() => {
@@ -64,6 +67,7 @@ const GameScreen = () => {
     setPoints(0)
     initializeEnemy("enemy1", { x: 100, y: 200 }) // Reinitialize first enemy
     initializeEnemy("enemy2", { x: 200, y: 300 }) // Reinitialize second enemy
+    initializeEnemy("enemy3", { x: 500, y: 300 }) // Reinitialize third enemy
   }
 
   const togglePause = () => {
@@ -102,6 +106,14 @@ const GameScreen = () => {
     }
   }, [enemies])
 
+  // Handle player flashing effect when hit
+  useEffect(() => {
+    if (isFlashing) {
+      const timer = setTimeout(() => setIsFlashing(false), 200)
+      return () => clearTimeout(timer)
+    }
+  }, [isFlashing])
+
   return (
     <>
       {explosions.map((explosion) => (
@@ -124,7 +136,7 @@ const GameScreen = () => {
           />
         ))}
         <div
-          className="player-wrapper"
+          className={`player-wrapper ${isFlashing ? "flashing" : ""}`}
           style={{
             left: `${playerPosition.x}px`,
             top: `${playerPosition.y}px`,
