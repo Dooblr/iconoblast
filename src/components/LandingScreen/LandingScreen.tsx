@@ -1,10 +1,9 @@
 // ./components/LandingScreen/LandingScreen.tsx
 
 import React from "react"
-import useStore from "../../store"
-import { CiPlay1 } from "react-icons/ci"
 import { FaPlay } from "react-icons/fa"
 import gameLogo from "../../assets/images/logo.svg"
+import useStore from "../../store"
 
 import "./LandingScreen.scss"
 

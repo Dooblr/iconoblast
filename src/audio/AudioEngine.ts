@@ -5,24 +5,33 @@ class AudioEngine {
   private gainNode: GainNode;
   private activeSources: Map<string, AudioBufferSourceNode>;
 
+  private hudAudioContext: AudioContext;
+  private hudGainNode: GainNode;
+
   constructor() {
-    this.audioContext = new (window.AudioContext ||
-      (window as any).webkitAudioContext)();
+    // Main game audio context
+    this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
     this.gainNode = this.audioContext.createGain();
     this.gainNode.gain.value = 0.5; // Default volume to 0.5
     this.gainNode.connect(this.audioContext.destination);
     this.activeSources = new Map();
+
+    // HUD audio context
+    this.hudAudioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    this.hudGainNode = this.hudAudioContext.createGain();
+    this.hudGainNode.gain.value = 0.5; // Default volume to 0.5
+    this.hudGainNode.connect(this.hudAudioContext.destination);
   }
 
-  async loadAudioBuffer(audioSrc: string): Promise<AudioBuffer> {
+  async loadAudioBuffer(audioContext: AudioContext, audioSrc: string): Promise<AudioBuffer> {
     const response = await fetch(audioSrc);
     const arrayBuffer = await response.arrayBuffer();
-    const audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
+    const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
     return audioBuffer;
   }
 
   async playSound(audioSrc: string, loop: boolean = false): Promise<string> {
-    const buffer = await this.loadAudioBuffer(audioSrc);
+    const buffer = await this.loadAudioBuffer(this.audioContext, audioSrc);
     const source = this.audioContext.createBufferSource();
     source.buffer = buffer;
     source.loop = loop;
@@ -37,6 +46,14 @@ class AudioEngine {
     };
 
     return id;
+  }
+
+  async playHUDSound(audioSrc: string): Promise<void> {
+    const buffer = await this.loadAudioBuffer(this.hudAudioContext, audioSrc);
+    const source = this.hudAudioContext.createBufferSource();
+    source.buffer = buffer;
+    source.connect(this.hudGainNode);
+    source.start(0);
   }
 
   stopSound(id: string) {
@@ -58,6 +75,7 @@ class AudioEngine {
 
   setVolume(volume: number) {
     this.gainNode.gain.value = volume;
+    this.hudGainNode.gain.value = volume;
   }
 
   suspend() {
