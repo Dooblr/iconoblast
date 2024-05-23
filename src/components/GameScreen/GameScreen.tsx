@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { HiArrowCircleUp, HiChevronUp, HiOutlineUser } from "react-icons/hi"
 import "../../App.scss"
 import shootSound from "../../assets/audio/shoot.mp3"
@@ -13,8 +13,7 @@ import HUD from "../HUD/HUD"
 import Projectile from "../Projectile/Projectile"
 import AudioEngine from "../../audio/AudioEngine"
 import playerHitSound from "../../assets/audio/player_impact.mp3"
-//@ts-ignore
-import { FiBox } from "react-icons/fi"
+import GameOver from "../GameOver/GameOver" // Import GameOver component
 
 const GameScreen: React.FC = () => {
   const playerRef = useRef<HTMLDivElement>(null)
@@ -29,6 +28,7 @@ const GameScreen: React.FC = () => {
     rotation,
     playerHP,
     setPlayerHP,
+    resetGame, // Add resetGame to destructuring
   } = useStore()
   const [isPaused, setIsPaused] = useState<boolean>(false) // Pause state
 
@@ -70,7 +70,12 @@ const GameScreen: React.FC = () => {
   }, [moveEnemies, isPaused])
 
   const enemiesData = [
-    { id: "enemy1", position: { x: 100, y: 200 }, health: 10, icon: HiOutlineUser },
+    {
+      id: "enemy1",
+      position: { x: 100, y: 200 },
+      health: 10,
+      icon: HiOutlineUser,
+    },
     {
       id: "enemy2",
       position: { x: 200, y: 300 },
@@ -96,7 +101,7 @@ const GameScreen: React.FC = () => {
     })
   }, [])
 
-  const resetGame = () => {
+  const resetGameHandler = () => {
     setProjectiles([])
     setPlayerHP(10)
     setPoints(0)
@@ -132,7 +137,7 @@ const GameScreen: React.FC = () => {
         (enemy) => !enemies.some((e) => e.id === enemy.id)
       )
       if (removedEnemy) {
-        // console.log("Enemy removed:", removedEnemy)
+        // console.log("Enemy removed:", removedEnemy);
       }
       previousEnemies.current = enemies
     }
@@ -140,81 +145,89 @@ const GameScreen: React.FC = () => {
 
   return (
     <>
-      {explosions.map((explosion) => (
-        <Explosion
-          x={explosion.x}
-          y={explosion.y}
-          size={"50px"}
-          key={explosion.key}
-        />
-      ))}
-      <div className="container" onClick={handleClick}>
-        {enemies.map((enemy) => (
-          <Enemy
-            key={enemy.id}
-            id={enemy.id}
-            maxHealth={enemy.health}
-            size="5rem"
-            Icon={enemy.icon} // Assuming the enemy object now has an 'icon' property
-            onDeath={handleEnemyDeath}
-          />
-        ))}
-        <div
-          className={`player-wrapper`}
-          style={{
-            left: `${playerPosition.x}px`,
-            top: `${playerPosition.y}px`,
-            transition: "left 0.5s ease, top 0.5s ease",
-          }}
-        >
-          <div
-            ref={playerRef}
-            className="player-icon-wrapper"
-            style={{
-              transform: `rotate(${rotation}deg)`,
-              transition: "transform 0.5s ease",
-            }}
-          >
-            <HiArrowCircleUp
-              className={playerHit ? `player-icon player-hit` : "player-icon"}
-              // style={playerHit ? { color: "tomato" } : {}}
+      {playerHP <= 0 ? (
+        <GameOver />
+      ) : (
+        <>
+          {explosions.map((explosion) => (
+            <Explosion
+              x={explosion.x}
+              y={explosion.y}
+              size={"50px"}
+              key={explosion.key}
             />
+          ))}
+          <div className="container" onClick={handleClick}>
+            {enemies.map((enemy) => (
+              <Enemy
+                key={enemy.id}
+                id={enemy.id}
+                maxHealth={enemy.health}
+                size="5rem"
+                Icon={enemy.icon} // Assuming the enemy object now has an 'icon' property
+                onDeath={handleEnemyDeath}
+              />
+            ))}
             <div
+              className={`player-wrapper`}
               style={{
-                borderRadius: "100%",
-                width: "10px",
-                height: "10px",
-                background: "red",
-                position: "absolute",
-                top: "0",
-                opacity: "0",
+                left: `${playerPosition.x}px`,
+                top: `${playerPosition.y}px`,
+                transition: "left 0.5s ease, top 0.5s ease",
               }}
-              id="fire-point"
-              ref={firePointRef}
-            />
-          </div>
-        </div>
+            >
+              <div
+                ref={playerRef}
+                className="player-icon-wrapper"
+                style={{
+                  transform: `rotate(${rotation}deg)`,
+                  transition: "transform 0.5s ease",
+                }}
+              >
+                <HiArrowCircleUp
+                  className={
+                    playerHit ? `player-icon player-hit` : "player-icon"
+                  }
+                  // style={playerHit ? { color: "tomato" } : {}}
+                />
+                <div
+                  style={{
+                    borderRadius: "100%",
+                    width: "10px",
+                    height: "10px",
+                    background: "red",
+                    position: "absolute",
+                    top: "0",
+                    opacity: "0",
+                  }}
+                  id="fire-point"
+                  ref={firePointRef}
+                />
+              </div>
+            </div>
 
-        {projectiles.map((proj) => (
-          <Projectile
-            key={proj.id}
-            id={proj.id}
-            x={proj.x}
-            y={proj.y}
-            rotation={proj.rotation}
-            vx={proj.vx}
-            vy={proj.vy}
-            icon={HiChevronUp}
-            size="20px"
-            audioSrc={shootSound}
+            {projectiles.map((proj) => (
+              <Projectile
+                key={proj.id}
+                id={proj.id}
+                x={proj.x}
+                y={proj.y}
+                rotation={proj.rotation}
+                vx={proj.vx}
+                vy={proj.vy}
+                icon={HiChevronUp}
+                size="20px"
+                audioSrc={shootSound}
+              />
+            ))}
+          </div>
+          <HUD
+            resetGame={resetGameHandler}
+            togglePause={togglePause}
+            isPaused={isPaused}
           />
-        ))}
-      </div>
-      <HUD
-        resetGame={resetGame}
-        togglePause={togglePause}
-        isPaused={isPaused}
-      />
+        </>
+      )}
     </>
   )
 }

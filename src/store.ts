@@ -44,7 +44,7 @@ interface StoreState {
   togglePause: () => void
   currentPage: string
   setCurrentPage: (page: string) => void
-  // checkAndSpawnNewEnemy: () => void
+  resetGame: () => void // Add resetGame to store
 }
 
 const useStore = create<StoreState>((set, get) => ({
@@ -99,12 +99,14 @@ const useStore = create<StoreState>((set, get) => ({
   togglePause: () => set((state) => ({ isPaused: !state.isPaused })),
   currentPage: "landing",
   setCurrentPage: (page: string) => set({ currentPage: page }),
-  // checkAndSpawnNewEnemy: () => {
-  //   const { enemies, initializeEnemy } = get()
-  //   if (enemies.length === 0) {
-  //     initializeEnemy(`enemy${Date.now()}`, { x: 100, y: 200 }, 10, (<FiBox/>))
-  //   }
-  // },
+  resetGame: () => {
+    set({
+      playerHP: 10,
+      points: 0,
+      enemies: [],
+      playerPosition: { x: window.innerWidth / 2, y: window.innerHeight / 2 },
+    })
+  },
 }))
 
 export default useStore
