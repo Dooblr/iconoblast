@@ -1,5 +1,3 @@
-// ./App.tsx
-
 import React from "react"
 import LandingScreen from "./components/LandingScreen/LandingScreen"
 import GameScreen from "./components/GameScreen/GameScreen" // rename the existing App component to GameScreen

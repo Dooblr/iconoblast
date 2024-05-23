@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { IconType } from "react-icons"
-import impactSound from "../../assets/audio/enemy_impact.mp3" // Import the impact sound
-import explosionSound from "../../assets/audio/explosion.mp3" // Import the explosion sound
-import AudioEngine from "../../audio/AudioEngine"
-import useStore from "../../store"
 import "./Enemy.scss"
+import useStore from "../../store"
+import Explosion from "../Explosion/Explosion"
+import AudioEngine from "../../audio/AudioEngine"
+import explosionSound from "../../assets/audio/explosion.mp3" // Import the explosion sound
+import impactSound from "../../assets/audio/enemy_impact.mp3" // Import the impact sound
 
 interface EnemyProps {
   maxHealth: number
@@ -24,7 +25,7 @@ const Enemy: React.FC<EnemyProps> = ({
   const enemyRef = useRef<HTMLDivElement>(null)
   const [currentHealth, setCurrentHealth] = useState<number>(maxHealth)
   const [isHit, setIsHit] = useState<boolean>(false)
-  const { enemies, removeEnemy, checkAndSpawnNewEnemy } = useStore()
+  const { enemies, removeEnemy } = useStore()
 
   useEffect(() => {
     if (currentHealth === 0) {
@@ -39,10 +40,10 @@ const Enemy: React.FC<EnemyProps> = ({
       }
       onDeath(coords)
       removeEnemy(id)
-      checkAndSpawnNewEnemy()
+      // checkAndSpawnNewEnemy()
       AudioEngine.playSound(explosionSound) // Play explosion sound
     }
-  }, [currentHealth, id, onDeath, removeEnemy, checkAndSpawnNewEnemy])
+  }, [currentHealth, id, onDeath, removeEnemy])
 
   const handleHit = () => {
     setIsHit(true)
@@ -69,7 +70,6 @@ const Enemy: React.FC<EnemyProps> = ({
   return (
     <>
       <div
-        id={id}
         className="enemy"
         ref={enemyRef}
         style={{

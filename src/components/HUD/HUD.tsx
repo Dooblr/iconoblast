@@ -1,6 +1,4 @@
-// src/components/HUD/HUD.tsx
-
-import React from "react"
+import React, { useEffect } from "react"
 import { GrPowerReset } from "react-icons/gr"
 import { HiMiniPause, HiMiniPlay } from "react-icons/hi2"
 import useStore from "../../store"
@@ -14,7 +12,7 @@ interface HUDProps {
 }
 
 const HUD: React.FC<HUDProps> = ({ resetGame, togglePause, isPaused }) => {
-  const { points } = useStore()
+  const { points, playerHP } = useStore() // Include playerHP from the store
 
   const handleTogglePause = () => {
     if (isPaused) {
@@ -30,19 +28,39 @@ const HUD: React.FC<HUDProps> = ({ resetGame, togglePause, isPaused }) => {
     }
   }
 
+  useEffect(() => {
+    console.log(playerHP)
+  }, [playerHP])
+
+  const getHealthColor = () => {
+    if (playerHP >= 5) return "rgb(150,255,150)"
+    if (playerHP >= 2) return "rgb(255,255,150)"
+    return "tomato"
+  }
+
   return (
     <div className="hud-container">
       <h1 className="points-tracker shimmer">{points}</h1>
-      <div style={{ flexGrow: "2" }} />
-      <button className="reset-button" onClick={resetGame}>
-        <GrPowerReset />
-      </button>
-      <button
-        className={isPaused ? "play-button" : "pause-button"}
-        onClick={handleTogglePause}
-      >
-        {isPaused ? <HiMiniPlay /> : <HiMiniPause />}
-      </button>
+      <div className="health-bar-wrapper">
+        <div
+          className="health-bar"
+          style={{
+            width: `${playerHP * 10}%`,
+            backgroundColor: getHealthColor(),
+          }}
+        />
+      </div>
+      <div>
+        <button className="reset-button" onClick={resetGame}>
+          <GrPowerReset />
+        </button>
+        <button
+          className={isPaused ? "play-button" : "pause-button"}
+          onClick={handleTogglePause}
+        >
+          {isPaused ? <HiMiniPlay /> : <HiMiniPause />}
+        </button>
+      </div>
     </div>
   )
 }

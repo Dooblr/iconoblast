@@ -20,7 +20,7 @@ body {
 .container {
   position: relative;
   width: 100vw;
-  height: 90vh;
+  height: 99.5vh;
   max-width: 99.75vw;
   max-height: 100vh;
   display: flex;
@@ -64,7 +64,23 @@ body {
 
 .health-bar-inner {
   height: 100%;
-  background-color: green;
+  background-color: lightgreen;
   border-radius: 5px;
   transition: width 0.2s ease;
+}
+.player-hit {
+  color:tomato;
+}
+
+.player-wrapper.flashing .player-icon-wrapper {
+  animation: flash 0.5s alternate infinite;
+}
+
+@keyframes flash {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.5;
+  }
 }

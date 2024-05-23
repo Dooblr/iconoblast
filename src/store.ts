@@ -15,6 +15,8 @@ interface ExplosionData {
 interface Enemy {
   id: string
   position: Position
+  health: number
+  icon: any
 }
 
 interface StoreState {
@@ -31,13 +33,18 @@ interface StoreState {
   enemies: Enemy[]
   setEnemyPosition: (id: string, position: Position) => void
   removeEnemy: (id: string) => void
-  initializeEnemy: (id: string, position: Position) => void
+  initializeEnemy: (
+    id: string | number,
+    position: Position,
+    health: number,
+    icon: any
+  ) => void
   moveEnemies: () => void
   isPaused: boolean
   togglePause: () => void
   currentPage: string
   setCurrentPage: (page: string) => void
-  checkAndSpawnNewEnemy: () => void
+  // checkAndSpawnNewEnemy: () => void
 }
 
 const useStore = create<StoreState>((set, get) => ({
@@ -62,9 +69,14 @@ const useStore = create<StoreState>((set, get) => ({
     set((state) => ({
       enemies: state.enemies.filter((enemy) => enemy.id !== id),
     })),
-  initializeEnemy: (id, position) =>
-    set((state) => ({
-      enemies: [...state.enemies, { id, position }],
+  initializeEnemy: (
+    id: string | number,
+    position: Position,
+    health: number,
+    icon: any
+  ) =>
+    set((state: any) => ({
+      enemies: [...state.enemies, { id, position, health, icon }],
     })),
   moveEnemies: () => {
     set((state) => {
@@ -76,7 +88,7 @@ const useStore = create<StoreState>((set, get) => ({
           enemy.position.y,
           playerPosition.x,
           playerPosition.y,
-          1 // Adjust speed to make it slower and smoother
+          0.5 // Adjust speed to make it slower and smoother
         )
         return { ...enemy, position: newPos }
       })
@@ -87,12 +99,12 @@ const useStore = create<StoreState>((set, get) => ({
   togglePause: () => set((state) => ({ isPaused: !state.isPaused })),
   currentPage: "landing",
   setCurrentPage: (page: string) => set({ currentPage: page }),
-  checkAndSpawnNewEnemy: () => {
-    const { enemies, initializeEnemy } = get()
-    if (enemies.length === 0) {
-      initializeEnemy(`enemy${Date.now()}`, { x: 100, y: 200 })
-    }
-  },
+  // checkAndSpawnNewEnemy: () => {
+  //   const { enemies, initializeEnemy } = get()
+  //   if (enemies.length === 0) {
+  //     initializeEnemy(`enemy${Date.now()}`, { x: 100, y: 200 }, 10, (<FiBox/>))
+  //   }
+  // },
 }))
 
 export default useStore

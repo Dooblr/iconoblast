@@ -11,8 +11,11 @@ import Enemy from "../Enemy/Enemy"
 import Explosion from "../Explosion/Explosion"
 import HUD from "../HUD/HUD"
 import Projectile from "../Projectile/Projectile"
+import AudioEngine from "../../audio/AudioEngine"
+import playerHitSound from "../../assets/audio/player_impact.mp3"
+import { FiBox } from "react-icons/fi"
 
-const GameScreen = () => {
+const GameScreen: React.FC = () => {
   const playerRef = useRef<HTMLDivElement>(null)
   const firePointRef = useRef<HTMLDivElement>(null)
   const {
@@ -23,18 +26,13 @@ const GameScreen = () => {
     points,
     setPoints,
     rotation,
+    playerHP,
+    setPlayerHP,
   } = useStore()
-  const [playerHP, setPlayerHP] = useState<number>(10) // Player health state
   const [isPaused, setIsPaused] = useState<boolean>(false) // Pause state
   const [isFlashing, setIsFlashing] = useState<boolean>(false) // Flashing state
 
   const previousEnemies = useRef(enemies)
-
-  useEffect(() => {
-    initializeEnemy("enemy1", { x: 100, y: 200 }) // Initialize first enemy
-    initializeEnemy("enemy2", { x: 200, y: 300 }) // Initialize second enemy
-    initializeEnemy("enemy3", { x: 500, y: 300 }) // Initialize third enemy
-  }, [initializeEnemy])
 
   const handleClick = usePlayerMovement(isPaused, playerRef)
 
@@ -47,33 +45,61 @@ const GameScreen = () => {
     fireRate
   )
 
-  useCollisionDetection(
-    projectiles,
-    setProjectiles,
-    isPaused,
-    playerRef,
-    setPlayerHP,
-    playerHP
-  )
+  useCollisionDetection(projectiles, setProjectiles, isPaused, playerRef)
   useWebAudioBackgroundMusic(isPaused)
+
+  const [playerHit, setPlayerHit] = useState(false)
+  useEffect(() => {
+    if (playerHP !== 10) {
+      setPlayerHit(true)
+      AudioEngine.playSound(playerHitSound)
+    }
+    setTimeout(() => {
+      setPlayerHit(false)
+    }, 100)
+  }, [playerHP])
 
   useEffect(() => {
     const interval = setInterval(() => {
       if (!isPaused) {
         moveEnemies()
       }
-    }, 100) // Move enemies every 100ms
+    }, 10)
 
     return () => clearInterval(interval)
   }, [moveEnemies, isPaused])
+
+  const enemiesData = [
+    { id: "enemy1", position: { x: 100, y: 200 }, health: 10, icon: HiOutlineUser },
+    {
+      id: "enemy2",
+      position: { x: 200, y: 300 },
+      health: 15,
+      icon: HiOutlineUser,
+    },
+    {
+      id: "enemy3",
+      position: { x: 500, y: 300 },
+      health: 20,
+      icon: HiOutlineUser,
+    },
+  ]
+
+  useEffect(() => {
+    enemiesData.forEach((enemyData) => {
+      initializeEnemy(
+        enemyData.id,
+        enemyData.position,
+        enemyData.health,
+        enemyData.icon
+      )
+    })
+  }, [])
 
   const resetGame = () => {
     setProjectiles([])
     setPlayerHP(10)
     setPoints(0)
-    initializeEnemy("enemy1", { x: 100, y: 200 }) // Reinitialize first enemy
-    initializeEnemy("enemy2", { x: 200, y: 300 }) // Reinitialize second enemy
-    initializeEnemy("enemy3", { x: 500, y: 300 }) // Reinitialize third enemy
   }
 
   const togglePause = () => {
@@ -106,19 +132,11 @@ const GameScreen = () => {
         (enemy) => !enemies.some((e) => e.id === enemy.id)
       )
       if (removedEnemy) {
-        console.log("Enemy removed:", removedEnemy)
+        // console.log("Enemy removed:", removedEnemy)
       }
       previousEnemies.current = enemies
     }
   }, [enemies])
-
-  // Handle player flashing effect when hit
-  useEffect(() => {
-    if (isFlashing) {
-      const timer = setTimeout(() => setIsFlashing(false), 200)
-      return () => clearTimeout(timer)
-    }
-  }, [isFlashing])
 
   return (
     <>
@@ -135,14 +153,14 @@ const GameScreen = () => {
           <Enemy
             key={enemy.id}
             id={enemy.id}
-            maxHealth={10}
+            maxHealth={enemy.health}
             size="5rem"
-            Icon={HiOutlineUser}
+            Icon={enemy.icon} // Assuming the enemy object now has an 'icon' property
             onDeath={handleEnemyDeath}
           />
         ))}
         <div
-          className={`player-wrapper ${isFlashing ? "flashing" : ""}`}
+          className={`player-wrapper`}
           style={{
             left: `${playerPosition.x}px`,
             top: `${playerPosition.y}px`,
@@ -157,7 +175,10 @@ const GameScreen = () => {
               transition: "transform 0.5s ease",
             }}
           >
-            <HiArrowCircleUp className="player-icon" />
+            <HiArrowCircleUp
+              className={playerHit ? `player-icon player-hit` : "player-icon"}
+              // style={playerHit ? { color: "tomato" } : {}}
+            />
             <div
               style={{
                 borderRadius: "100%",
@@ -170,13 +191,6 @@ const GameScreen = () => {
               }}
               id="fire-point"
               ref={firePointRef}
-            />
-          </div>
-
-          <div className="health-bar">
-            <div
-              className="health-bar-inner"
-              style={{ width: `${(playerHP / 10) * 100}%` }}
             />
           </div>
         </div>
@@ -195,13 +209,12 @@ const GameScreen = () => {
             audioSrc={shootSound}
           />
         ))}
-
-        <HUD
-          resetGame={resetGame}
-          togglePause={togglePause}
-          isPaused={isPaused}
-        />
       </div>
+      <HUD
+        resetGame={resetGame}
+        togglePause={togglePause}
+        isPaused={isPaused}
+      />
     </>
   )
 }
