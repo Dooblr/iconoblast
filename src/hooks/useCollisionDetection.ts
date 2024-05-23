@@ -7,7 +7,7 @@ const useCollisionDetection = (
   isPaused: boolean,
   playerRef: React.RefObject<HTMLDivElement>
 ) => {
-  const { enemies, removeEnemy, playerHP, setPlayerHP } = useStore()
+  const { playerHP, setPlayerHP } = useStore()
   const damageIntervalRef = useRef<number | null>(null)
 
   useEffect(() => {

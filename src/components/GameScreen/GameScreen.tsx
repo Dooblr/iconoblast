@@ -13,6 +13,7 @@ import HUD from "../HUD/HUD"
 import Projectile from "../Projectile/Projectile"
 import AudioEngine from "../../audio/AudioEngine"
 import playerHitSound from "../../assets/audio/player_impact.mp3"
+//@ts-ignore
 import { FiBox } from "react-icons/fi"
 
 const GameScreen: React.FC = () => {
@@ -30,7 +31,6 @@ const GameScreen: React.FC = () => {
     setPlayerHP,
   } = useStore()
   const [isPaused, setIsPaused] = useState<boolean>(false) // Pause state
-  const [isFlashing, setIsFlashing] = useState<boolean>(false) // Flashing state
 
   const previousEnemies = useRef(enemies)
 
