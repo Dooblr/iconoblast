@@ -2,21 +2,21 @@
 import React, { useEffect, useRef, useState } from "react"
 import { HiArrowCircleUp, HiChevronUp, HiOutlineUser } from "react-icons/hi"
 import "../../App.scss"
-import "./GameScreen.scss"
+import playerHitSound from "../../assets/audio/player_impact.mp3"
 import shootSound from "../../assets/audio/shoot.mp3"
+import AudioEngine from "../../audio/AudioEngine"
 import useCollisionDetection from "../../hooks/useCollisionDetection"
 import usePlayerMovement from "../../hooks/usePlayerMovement"
 import useProjectileManagement from "../../hooks/useProjectileManagement"
 import useWebAudioBackgroundMusic from "../../hooks/useWebAudioBackgroundMusic"
 import useStore from "../../store"
+import { EnemyData } from "../../types"
 import Enemy from "../Enemy/Enemy"
 import Explosion from "../Explosion/Explosion"
+import GameOver from "../GameOver/GameOver" // Import GameOver component
 import HUD from "../HUD/HUD"
 import Projectile from "../Projectile/Projectile"
-import AudioEngine from "../../audio/AudioEngine"
-import playerHitSound from "../../assets/audio/player_impact.mp3"
-import GameOver from "../GameOver/GameOver" // Import GameOver component
-import { EnemyData } from "../../types"
+import "./GameScreen.scss"
 
 const GameScreen: React.FC = () => {
   const playerRef = useRef<HTMLDivElement>(null)
@@ -30,7 +30,6 @@ const GameScreen: React.FC = () => {
     setPoints,
     rotation,
     playerHP,
-    setPlayerHP,
     resetGame,
     wave,
     setWave,

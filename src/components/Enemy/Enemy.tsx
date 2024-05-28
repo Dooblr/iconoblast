@@ -1,12 +1,11 @@
 // Enemy.tsx
 import { useEffect, useRef, useState } from "react"
 import { IconType } from "react-icons"
-import impactSound from "../../assets/audio/enemy_impact.mp3" // Import the impact sound
-import explosionSound from "../../assets/audio/explosion.mp3" // Import the explosion sound
+import impactSound from "../../assets/audio/enemy_impact.mp3"; // Import the impact sound
+import explosionSound from "../../assets/audio/explosion.mp3"; // Import the explosion sound
 import AudioEngine from "../../audio/AudioEngine"
 import useStore from "../../store"
 import "./Enemy.scss"
-import { Position } from "../../types"
 
 interface EnemyProps {
   maxHealth: number
