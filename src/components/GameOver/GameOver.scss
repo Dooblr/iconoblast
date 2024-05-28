@@ -1,0 +1,26 @@
+@import '../../styles/styleVariables.scss';
+
+.game-over-container {
+  flex-direction: column;
+}
+
+.restart-button {
+  align-self: center;
+  padding: 1rem;
+  background: lightgreen;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1.5rem;
+  height: 56px;
+  cursor: pointer;
+  transition: 0.2s;
+  width: fit-content;
+  color: $backgroundColor;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+  &:active {
+    transform: scale(1.1);
+  }
+}

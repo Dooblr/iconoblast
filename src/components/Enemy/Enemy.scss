@@ -45,3 +45,16 @@
     color: inherit;
   }
 }
+
+.enemy.wobble {
+  animation: wobble 1s infinite alternate ease-in-out;
+}
+
+@keyframes wobble {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(20px);
+  }
+}

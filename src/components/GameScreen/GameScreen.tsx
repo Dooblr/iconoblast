@@ -1,6 +1,8 @@
+// GameScreen.tsx
 import React, { useEffect, useRef, useState } from "react"
 import { HiArrowCircleUp, HiChevronUp, HiOutlineUser } from "react-icons/hi"
 import "../../App.scss"
+import "./GameScreen.scss"
 import shootSound from "../../assets/audio/shoot.mp3"
 import useCollisionDetection from "../../hooks/useCollisionDetection"
 import usePlayerMovement from "../../hooks/usePlayerMovement"
@@ -14,6 +16,7 @@ import Projectile from "../Projectile/Projectile"
 import AudioEngine from "../../audio/AudioEngine"
 import playerHitSound from "../../assets/audio/player_impact.mp3"
 import GameOver from "../GameOver/GameOver" // Import GameOver component
+import { EnemyData } from "../../types"
 
 const GameScreen: React.FC = () => {
   const playerRef = useRef<HTMLDivElement>(null)
@@ -28,7 +31,9 @@ const GameScreen: React.FC = () => {
     rotation,
     playerHP,
     setPlayerHP,
-    resetGame, // Add resetGame to destructuring
+    resetGame,
+    wave,
+    setWave,
   } = useStore()
   const [isPaused, setIsPaused] = useState<boolean>(false) // Pause state
 
@@ -69,42 +74,37 @@ const GameScreen: React.FC = () => {
     return () => clearInterval(interval)
   }, [moveEnemies, isPaused])
 
-  const enemiesData = [
-    {
-      id: "enemy1",
-      position: { x: 100, y: 200 },
+  const generateRandomPosition = () => {
+    const x = Math.random() < 0.5 ? -50 : window.innerWidth + 50
+    const y = Math.random() * window.innerHeight
+    if (Math.random() < 0.5) {
+      return {
+        x: Math.random() * window.innerWidth,
+        y: Math.random() < 0.5 ? -50 : window.innerHeight + 50,
+      }
+    }
+    return { x, y }
+  }
+
+  const spawnWave = (count: number) => {
+    const newEnemies: EnemyData[] = Array.from({ length: count }, (_, i) => ({
+      id: `enemy${Date.now()}${i}`,
+      position: generateRandomPosition(),
       health: 10,
       icon: HiOutlineUser,
-    },
-    {
-      id: "enemy2",
-      position: { x: 200, y: 300 },
-      health: 15,
-      icon: HiOutlineUser,
-    },
-    {
-      id: "enemy3",
-      position: { x: 500, y: 300 },
-      health: 20,
-      icon: HiOutlineUser,
-    },
-  ]
+    }))
+    newEnemies.forEach(initializeEnemy)
+  }
 
   useEffect(() => {
-    enemiesData.forEach((enemyData) => {
-      initializeEnemy(
-        enemyData.id,
-        enemyData.position,
-        enemyData.health,
-        enemyData.icon
-      )
-    })
+    // Initialize the first enemy
+    spawnWave(1)
   }, [])
 
   const resetGameHandler = () => {
     setProjectiles([])
-    setPlayerHP(10)
-    setPoints(0)
+    resetGame()
+    spawnWave(1) // Reset to the first wave
   }
 
   const togglePause = () => {
@@ -128,6 +128,11 @@ const GameScreen: React.FC = () => {
   const handleEnemyDeath = (coords: { x: number; y: number }) => {
     setPoints(points + 1)
     handleExplosion(coords.x - 20, coords.y - 10)
+
+    if (enemies.length === 1) {
+      setWave(wave + 1)
+      spawnWave(wave + 1)
+    }
   }
 
   useEffect(() => {
@@ -163,9 +168,10 @@ const GameScreen: React.FC = () => {
                 key={enemy.id}
                 id={enemy.id}
                 maxHealth={enemy.health}
-                size="5rem"
+                size={enemy.size || "5rem"}
                 Icon={enemy.icon} // Assuming the enemy object now has an 'icon' property
                 onDeath={handleEnemyDeath}
+                wobble={enemy.wobble || false} // Pass the wobble prop
               />
             ))}
             <div
@@ -188,7 +194,6 @@ const GameScreen: React.FC = () => {
                   className={
                     playerHit ? `player-icon player-hit` : "player-icon"
                   }
-                  // style={playerHit ? { color: "tomato" } : {}}
                 />
                 <div
                   style={{

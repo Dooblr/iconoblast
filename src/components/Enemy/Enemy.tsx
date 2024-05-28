@@ -1,3 +1,4 @@
+// Enemy.tsx
 import { useEffect, useRef, useState } from "react"
 import { IconType } from "react-icons"
 import impactSound from "../../assets/audio/enemy_impact.mp3" // Import the impact sound
@@ -5,6 +6,7 @@ import explosionSound from "../../assets/audio/explosion.mp3" // Import the expl
 import AudioEngine from "../../audio/AudioEngine"
 import useStore from "../../store"
 import "./Enemy.scss"
+import { Position } from "../../types"
 
 interface EnemyProps {
   maxHealth: number
@@ -12,6 +14,7 @@ interface EnemyProps {
   Icon: IconType
   onDeath: (coords: { x: number; y: number }) => void
   id: string
+  wobble?: boolean // Add the wobble prop
 }
 
 const Enemy: React.FC<EnemyProps> = ({
@@ -20,6 +23,7 @@ const Enemy: React.FC<EnemyProps> = ({
   Icon,
   onDeath,
   id,
+  wobble = false,
 }) => {
   const enemyRef = useRef<HTMLDivElement>(null)
   const [currentHealth, setCurrentHealth] = useState<number>(maxHealth)
@@ -39,7 +43,6 @@ const Enemy: React.FC<EnemyProps> = ({
       }
       onDeath(coords)
       removeEnemy(id)
-      // checkAndSpawnNewEnemy()
       AudioEngine.playSound(explosionSound) // Play explosion sound
     }
   }, [currentHealth, id, onDeath, removeEnemy])
@@ -69,7 +72,7 @@ const Enemy: React.FC<EnemyProps> = ({
   return (
     <>
       <div
-        className="enemy"
+        className={`enemy ${wobble ? "wobble" : ""}`} // Apply wobble class if wobble is true
         ref={enemyRef}
         style={{
           left: `${enemy.position.x}px`,

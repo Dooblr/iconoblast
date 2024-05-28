@@ -1,22 +1,12 @@
+// store.ts
 import create from "zustand"
 import { moveTowardsTarget } from "./utils/movement"
-
-interface Position {
-  x: number
-  y: number
-}
+import { EnemyData, Position } from "./types"
 
 interface ExplosionData {
   id: string
   x: number
   y: number
-}
-
-interface Enemy {
-  id: string
-  position: Position
-  health: number
-  icon: any
 }
 
 interface StoreState {
@@ -30,21 +20,18 @@ interface StoreState {
   setPlayerHP: (hp: number) => void
   rotation: number
   setRotation: (rotation: number) => void
-  enemies: Enemy[]
+  enemies: EnemyData[]
   setEnemyPosition: (id: string, position: Position) => void
   removeEnemy: (id: string) => void
-  initializeEnemy: (
-    id: string | number,
-    position: Position,
-    health: number,
-    icon: any
-  ) => void
+  initializeEnemy: (enemy: EnemyData) => void
   moveEnemies: () => void
   isPaused: boolean
   togglePause: () => void
   currentPage: string
   setCurrentPage: (page: string) => void
-  resetGame: () => void // Add resetGame to store
+  resetGame: () => void
+  wave: number
+  setWave: (wave: number) => void
 }
 
 const useStore = create<StoreState>((set, get) => ({
@@ -69,20 +56,22 @@ const useStore = create<StoreState>((set, get) => ({
     set((state) => ({
       enemies: state.enemies.filter((enemy) => enemy.id !== id),
     })),
-  initializeEnemy: (
-    id: string | number,
-    position: Position,
-    health: number,
-    icon: any
-  ) =>
+  initializeEnemy: (enemy: EnemyData) =>
     set((state: any) => ({
-      enemies: [...state.enemies, { id, position, health, icon }],
+      enemies: [...state.enemies, enemy],
     })),
   moveEnemies: () => {
     set((state) => {
       if (state.isPaused) return state // Return the current state if paused
       const { playerPosition, enemies } = state
       const newEnemies = enemies.map((enemy) => {
+        if (enemy.wobble) {
+          const newPos = {
+            ...enemy.position,
+            x: enemy.position.x + Math.sin(Date.now() / 100) * 5, // Wobble effect
+          }
+          return { ...enemy, position: newPos }
+        }
         const newPos = moveTowardsTarget(
           enemy.position.x,
           enemy.position.y,
@@ -105,8 +94,11 @@ const useStore = create<StoreState>((set, get) => ({
       points: 0,
       enemies: [],
       playerPosition: { x: window.innerWidth / 2, y: window.innerHeight / 2 },
+      wave: 1,
     })
   },
+  wave: 1,
+  setWave: (wave) => set({ wave }),
 }))
 
 export default useStore
