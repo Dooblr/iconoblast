@@ -16,11 +16,13 @@ const HUD: React.FC<HUDProps> = ({ resetGame, togglePause, isPaused }) => {
 
   const handleTogglePause = () => {
     if (isPaused) {
+      AudioEngine.resumeBackgroundMusic()
       togglePause() // Toggle pause first to update the state
       setTimeout(() => {
         AudioEngine.playHUDSound("/src/assets/audio/resume.mp3")
       }, 0) // Play resume sound after state has been updated
     } else {
+      AudioEngine.pauseBackgroundMusic()
       togglePause() // Toggle pause first to update the state
       setTimeout(() => {
         AudioEngine.playHUDSound("/src/assets/audio/pause.mp3")

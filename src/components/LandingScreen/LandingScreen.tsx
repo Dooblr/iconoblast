@@ -19,7 +19,7 @@ const LandingScreen: React.FC = () => {
       <img
         src={gameLogo}
         style={{ filter: "invert(1)", marginBottom: "3rem" }}
-        width={400}
+        className="landing-title"
       />
       <button className="play-button" onClick={handlePlay}>
         <FaPlay

@@ -13,12 +13,18 @@
   h1 {
     font-size: 5rem;
   }
+
+  .landing-title {
+    width:auto;
+    // border:1px solid red;
+    max-width: 80vw;
+  }
 }
 
 .play-button {
   background: linear-gradient(
     90deg,
-    /* Change direction to horizontal (left to right) */ #ff9a9a,
+    #ff9a9a,
     #ffd27a,
     #b3ffab,
     #a3ffff,
@@ -34,7 +40,7 @@
     #ff9ae7,
     #ff9a9a
   );
-  background-size: 800% 100%; /* Adjust background size */
+  background-size: 800% 100%;
   border: none;
   border-radius: 10px;
   padding: 10px 20px;
@@ -45,7 +51,7 @@
   position: relative;
   overflow: hidden;
   transition: background 0.5s ease;
-  animation: shimmer 60s linear infinite; /* Adjust animation duration */
+  animation: shimmer 60s linear infinite;
   width: 10rem;
   height: 5rem;
   font-size: 2.5rem;
@@ -65,6 +71,6 @@
     background-position: 0% 0%;
   }
   100% {
-    background-position: -200% 0%; /* Ensure the background moves fully */
+    background-position: -200% 0%;
   }
 }
