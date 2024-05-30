@@ -5,7 +5,11 @@ const useCollisionDetection = (
   projectiles: any[],
   setProjectiles: (fn: (prev: any[]) => any[]) => void,
   isPaused: boolean,
-  playerRef: React.RefObject<HTMLDivElement>
+  playerRef: React.RefObject<HTMLDivElement>,
+  powerUp: { x: number; y: number } | null,
+  setPowerUp: (value: { x: number; y: number } | null) => void,
+  setProjectileSize: (value: (prevSize: string) => string) => void,
+  setFireRate: (value: (prevRate: number) => number) => void
 ) => {
   const { playerHP, setPlayerHP } = useStore()
   const damageIntervalRef = useRef<number | null>(null)
@@ -87,6 +91,28 @@ const useCollisionDetection = (
           }
         }
       }
+
+      // Detect collision between player and power-up
+      if (playerRef.current && powerUp) {
+        const playerRect = playerRef.current.getBoundingClientRect()
+        const powerUpRect = {
+          left: powerUp.x,
+          top: powerUp.y,
+          right: powerUp.x + 20,
+          bottom: powerUp.y + 20,
+        }
+
+        if (
+          playerRect.left < powerUpRect.right &&
+          playerRect.right > powerUpRect.left &&
+          playerRect.top < powerUpRect.bottom &&
+          playerRect.bottom > powerUpRect.top
+        ) {
+          setProjectileSize((prevSize) => `${parseFloat(prevSize) * 1.2}px`)
+          setFireRate((prevRate) => prevRate * 0.8)
+          setPowerUp(null)
+        }
+      }
     }
 
     const interval = setInterval(checkCollisions, 50) // Check for collisions every 50ms
@@ -97,7 +123,17 @@ const useCollisionDetection = (
         clearInterval(damageIntervalRef.current)
       }
     }
-  }, [isPaused, setProjectiles, playerRef, playerHP, setPlayerHP])
+  }, [
+    isPaused,
+    setProjectiles,
+    playerRef,
+    playerHP,
+    setPlayerHP,
+    powerUp,
+    setPowerUp,
+    setProjectileSize,
+    setFireRate,
+  ])
 }
 
 export default useCollisionDetection

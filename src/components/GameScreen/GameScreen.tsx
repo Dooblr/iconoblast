@@ -1,4 +1,3 @@
-// GameScreen.tsx
 import React, { useEffect, useRef, useState } from "react"
 import { HiArrowCircleUp, HiChevronUp, HiOutlineUser } from "react-icons/hi"
 import "../../App.scss"
@@ -13,9 +12,10 @@ import useStore from "../../store"
 import { EnemyData } from "../../types"
 import Enemy from "../Enemy/Enemy"
 import Explosion from "../Explosion/Explosion"
-import GameOver from "../GameOver/GameOver" // Import GameOver component
+import GameOver from "../GameOver/GameOver"
 import HUD from "../HUD/HUD"
 import Projectile from "../Projectile/Projectile"
+import PowerUp from "../PowerUp/PowerUp"
 import "./GameScreen.scss"
 
 const GameScreen: React.FC = () => {
@@ -40,7 +40,9 @@ const GameScreen: React.FC = () => {
 
   const handleClick = usePlayerMovement(isPaused, playerRef)
 
-  const fireRate = 521.74 // Calculated fire rate for 115 BPM
+  const baseFireRate = 521.74 // Base fire rate for 115 BPM
+  const [fireRate, setFireRate] = useState<number>(baseFireRate)
+  const [projectileSize, setProjectileSize] = useState<string>("20px")
 
   const { projectiles, setProjectiles } = useProjectileManagement(
     rotation,
@@ -49,10 +51,22 @@ const GameScreen: React.FC = () => {
     fireRate
   )
 
-  useCollisionDetection(projectiles, setProjectiles, isPaused, playerRef)
+  const [powerUp, setPowerUp] = useState<{ x: number; y: number } | null>(null)
+
+  useCollisionDetection(
+    projectiles,
+    setProjectiles,
+    isPaused,
+    playerRef,
+    powerUp,
+    setPowerUp,
+    setProjectileSize,
+    setFireRate
+  )
   useWebAudioBackgroundMusic(isPaused)
 
   const [playerHit, setPlayerHit] = useState(false)
+
   useEffect(() => {
     if (playerHP !== 10) {
       setPlayerHit(true)
@@ -93,6 +107,14 @@ const GameScreen: React.FC = () => {
       icon: HiOutlineUser,
     }))
     newEnemies.forEach(initializeEnemy)
+
+    // Spawn power-up every 3 waves
+    if ((wave + 1) % 3 === 0) {
+      setPowerUp({ x: 500, y: 500 })
+    }
+    if (wave === 1) {
+      setPowerUp({ x: 200, y: 200 })
+    }
   }
 
   useEffect(() => {
@@ -103,6 +125,7 @@ const GameScreen: React.FC = () => {
   const resetGameHandler = () => {
     setProjectiles([])
     resetGame()
+    setPowerUp(null)
     spawnWave(1) // Reset to the first wave
   }
 
@@ -133,6 +156,34 @@ const GameScreen: React.FC = () => {
       spawnWave(wave + 1)
     }
   }
+
+  const checkPowerUpCollection = () => {
+    if (powerUp) {
+      const playerRect = playerRef.current?.getBoundingClientRect()
+      const powerUpRect = {
+        left: powerUp.x,
+        top: powerUp.y,
+        right: powerUp.x + 20,
+        bottom: powerUp.y + 20,
+      }
+
+      if (
+        playerRect &&
+        playerRect.left < powerUpRect.right &&
+        playerRect.right > powerUpRect.left &&
+        playerRect.top < powerUpRect.bottom &&
+        playerRect.bottom > powerUpRect.top
+      ) {
+        setProjectileSize((prevSize) => `${parseFloat(prevSize) * 1.2}px`)
+        setFireRate((prevRate) => prevRate * 0.8)
+        setPowerUp(null)
+      }
+    }
+  }
+
+  useEffect(() => {
+    checkPowerUpCollection()
+  }, [playerPosition, powerUp])
 
   useEffect(() => {
     if (previousEnemies.current.length !== enemies.length) {
@@ -220,10 +271,12 @@ const GameScreen: React.FC = () => {
                 vx={proj.vx}
                 vy={proj.vy}
                 icon={HiChevronUp}
-                size="20px"
+                size={projectileSize} // Updated to use state
                 audioSrc={shootSound}
               />
             ))}
+
+            {powerUp && <PowerUp x={powerUp.x} y={powerUp.y} />}
           </div>
           <HUD
             resetGame={resetGameHandler}
