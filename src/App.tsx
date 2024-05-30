@@ -6,6 +6,8 @@ import "./App.scss"
 
 const App: React.FC = () => {
   const currentPage = useStore((state) => state.currentPage)
+  const dimensions = {width: window.innerWidth,  height: window.innerHeight}
+  console.log('dimensions: ', dimensions)
 
   return (
     <>

@@ -2,7 +2,6 @@
   position: absolute;
   width: 3.5rem;
   height: 3.5rem;
-  // color: red;
   border-radius: 50%;
   animation: growShrink 1.5s infinite ease-in-out,
     rainbowShimmer 10s infinite linear;
@@ -64,4 +63,23 @@
   100% {
     color: #ff9a9a;
   }
+}
+
+@keyframes burst {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  80% {
+    transform: scale(2);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+.powerup.burst {
+  animation: burst 0.5s forwards;
 }

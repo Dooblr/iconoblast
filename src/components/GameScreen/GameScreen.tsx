@@ -292,7 +292,7 @@ const GameScreen: React.FC = () => {
               />
             ))}
 
-            {powerUp && <PowerUp x={powerUp.x} y={powerUp.y} />}
+            {powerUp && <PowerUp x={powerUp.x} y={powerUp.y} collected={false} />}
           </div>
           <HUD
             resetGame={resetGameHandler}

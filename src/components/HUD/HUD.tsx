@@ -52,7 +52,7 @@ const HUD: React.FC<HUDProps> = ({ resetGame, togglePause, isPaused }) => {
           }}
         />
       </div>
-      <div>
+      <div className="menu-buttons">
         <button className="reset-button" onClick={resetGame}>
           <GrPowerReset />
         </button>
