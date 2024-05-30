@@ -1,8 +1,67 @@
-// src/components/PowerUp/PowerUp.scss
 .powerup {
   position: absolute;
-  width: 20px;
-  height: 20px;
-  background-color: red;
+  width: 3.5rem;
+  height: 3.5rem;
+  // color: red;
   border-radius: 50%;
+  animation: growShrink 1.5s infinite ease-in-out,
+    rainbowShimmer 10s infinite linear;
+}
+
+@keyframes growShrink {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.25);
+  }
+}
+
+@keyframes rainbowShimmer {
+  0% {
+    color: #ff9a9a;
+  }
+  7% {
+    color: #ffd27a;
+  }
+  14% {
+    color: #b3ffab;
+  }
+  21% {
+    color: #a3ffff;
+  }
+  28% {
+    color: #a3a3ff;
+  }
+  35% {
+    color: #d1a3ff;
+  }
+  42% {
+    color: #ff9ae7;
+  }
+  50% {
+    color: #ff9a9a;
+  }
+  57% {
+    color: #ffd27a;
+  }
+  64% {
+    color: #b3ffab;
+  }
+  71% {
+    color: #a3ffff;
+  }
+  78% {
+    color: #a3a3ff;
+  }
+  85% {
+    color: #d1a3ff;
+  }
+  92% {
+    color: #ff9ae7;
+  }
+  100% {
+    color: #ff9a9a;
+  }
 }

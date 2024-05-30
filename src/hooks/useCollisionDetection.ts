@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react"
 import useStore from "../store"
+import AudioEngine from "../audio/AudioEngine"
 
 const useCollisionDetection = (
   projectiles: any[],
@@ -110,6 +111,7 @@ const useCollisionDetection = (
         ) {
           setProjectileSize((prevSize) => `${parseFloat(prevSize) * 1.2}px`)
           setFireRate((prevRate) => prevRate * 0.8)
+          AudioEngine.playPowerUpSound() // Play power-up sound
           setPowerUp(null)
         }
       }

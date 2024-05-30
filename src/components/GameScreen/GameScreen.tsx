@@ -87,7 +87,7 @@ const GameScreen: React.FC = () => {
     return () => clearInterval(interval)
   }, [moveEnemies, isPaused])
 
-  const generateRandomPosition = () => {
+  const generateRandomEnemyPosition = () => {
     const x = Math.random() < 0.5 ? -50 : window.innerWidth + 50
     const y = Math.random() * window.innerHeight
     if (Math.random() < 0.5) {
@@ -96,25 +96,41 @@ const GameScreen: React.FC = () => {
         y: Math.random() < 0.5 ? -50 : window.innerHeight + 50,
       }
     }
+
+    return { x, y }
+  }
+
+  const generateRandomPowerupPosition = () => {
+    const viewportWidth = window.innerWidth
+    const viewportHeight = window.innerHeight
+
+    // Define the boundaries for the spawn area
+    const minX = viewportWidth * 0.2
+    const maxX = viewportWidth * 0.8
+    const minY = viewportHeight * 0.2
+    const maxY = viewportHeight * 0.8
+
+    // Generate random position within the defined area
+    const x = Math.random() * (maxX - minX) + minX
+    const y = Math.random() * (maxY - minY) + minY
+
+    console.log("random position:", { x, y })
     return { x, y }
   }
 
   const spawnWave = (count: number) => {
     const newEnemies: EnemyData[] = Array.from({ length: count }, (_, i) => ({
       id: `enemy${Date.now()}${i}`,
-      position: generateRandomPosition(),
+      position: generateRandomEnemyPosition(),
       health: 10,
       icon: HiOutlineUser,
     }))
     newEnemies.forEach(initializeEnemy)
 
     // Spawn power-up every 3 waves
-    if ((wave + 1) % 3 === 0) {
-      setPowerUp({ x: 500, y: 500 })
-    }
-    if (wave === 1) {
-      setPowerUp({ x: 200, y: 200 })
-    }
+    // if ((wave + 1) % 3 === 0) {
+    setPowerUp(generateRandomPowerupPosition())
+    // }
   }
 
   useEffect(() => {

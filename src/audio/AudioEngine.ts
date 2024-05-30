@@ -1,3 +1,5 @@
+// src/audio/AudioEngine.ts
+
 class AudioEngine {
   private audioContext: AudioContext
   private gainNode: GainNode
@@ -58,6 +60,17 @@ class AudioEngine {
     const buffer = await this.loadAudioBuffer(this.hudAudioContext, audioSrc)
     const source = this.hudAudioContext.createBufferSource()
     source.buffer = buffer
+    source.connect(this.hudGainNode)
+    source.start(0)
+  }
+
+  async playPowerUpSound(): Promise<void> {
+    const powerUpSound = await this.loadAudioBuffer(
+      this.hudAudioContext,
+      "/src/assets/audio/powerup.mp3"
+    )
+    const source = this.hudAudioContext.createBufferSource()
+    source.buffer = powerUpSound
     source.connect(this.hudGainNode)
     source.start(0)
   }
