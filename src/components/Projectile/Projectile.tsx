@@ -1,5 +1,4 @@
 // src/components/Projectile/Projectile.tsx
-
 import { IconType } from "react-icons"
 import { motion } from "framer-motion"
 import { useEffect } from "react"
@@ -47,7 +46,7 @@ const Projectile: React.FC<ProjectileProps> = ({
         height: size,
       }}
     >
-      <Icon />
+      <Icon className="projectile-icon" />
     </motion.div>
   )
 }

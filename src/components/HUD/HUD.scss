@@ -1,12 +1,15 @@
+@import "../../styles/styleVariables.scss";
+
 .hud-container {
   position: fixed;
-  top: 0; // Fixed to the top of the viewport
-  left: 0; // Start from the left edge of the viewport
-  width: 100vw; // Full viewport width
-  height: 60px; // Fixed height
-  box-sizing: border-box; // Include padding and border in the element's total width and height
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  height: 60px;
+  box-sizing: border-box;
   padding: 10px;
-  background: rgba(0, 0, 0, 0.195); // Semi-transparent background for better visibility
+  padding-inline: 10%;
+  background: rgba(0, 0, 0, 0.195);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -43,11 +46,12 @@
     border-radius: 0.5rem;
     overflow: hidden;
     height: 2rem;
-    margin: 0 1rem;
     max-width: 20rem;
+    margin-inline: 1rem;
   }
 
   .health-bar {
+    margin: 0;
     height: 100%;
     transition: width 0.2s ease, background-color 0.2s ease;
   }
@@ -55,19 +59,26 @@
   .menu-buttons {
     display: flex;
     gap: 0.5rem;
+
+    svg {
+      color: $backgroundColor;
+      width: 24px; // Ensure consistent icon size
+      height: 24px;
+    }
   }
 
   button {
-    align-self: center;
-    padding: 1rem;
-    background: lightblue;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     border: none;
     border-radius: 0.5rem;
-    font-size: 1.5rem;
-    height: 56px;
+    font-size: calc(.5rem + 1vw);
+    min-width: fit-content;
+    width: 3rem;
+    height: 3rem;
     cursor: pointer;
     transition: 0.2s;
-    width: fit-content;
 
     &:hover {
       transform: scale(1.1);
@@ -80,6 +91,8 @@
   .reset-button {
     background: rgb(252, 170, 156);
     margin-right: 0.5rem;
+    color: black;
+    fill: black;
   }
 
   .pause-button {

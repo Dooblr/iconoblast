@@ -21,9 +21,9 @@ const LandingScreen: React.FC = () => {
         style={{ filter: "invert(1)", marginBottom: "3rem" }}
         className="landing-title"
       />
-      <button className="play-button" onClick={handlePlay}>
+      <button className="start-button" onClick={handlePlay}>
         <FaPlay
-          className="play-icon"
+          className="start-icon"
           style={{ transform: "translateY(15%)" }}
         />
       </button>

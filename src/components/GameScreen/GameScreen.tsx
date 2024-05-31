@@ -234,7 +234,7 @@ const GameScreen: React.FC = () => {
                 key={enemy.id}
                 id={enemy.id}
                 maxHealth={enemy.health}
-                size={enemy.size || "5rem"}
+                size={enemy.size || "calc(3rem + 1vw)"}
                 Icon={enemy.icon} // Assuming the enemy object now has an 'icon' property
                 onDeath={handleEnemyDeath}
                 wobble={enemy.wobble || false} // Pass the wobble prop

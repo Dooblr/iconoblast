@@ -30,7 +30,7 @@
 
 .enemy-icon {
   transition: color 0.2s;
-  font-size: 5rem; // Adjusted size for larger enemies
+  font-size: 5rem;
 }
 
 .enemy-icon.hit {
@@ -39,7 +39,7 @@
 
 @keyframes flashRed {
   0% {
-    color: red;
+    color: tomato;
   }
   100% {
     color: inherit;

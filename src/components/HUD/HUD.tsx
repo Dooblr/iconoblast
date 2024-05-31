@@ -2,7 +2,7 @@ import React, { useEffect } from "react"
 import { GrPowerReset } from "react-icons/gr"
 import { HiMiniPause, HiMiniPlay } from "react-icons/hi2"
 import useStore from "../../store"
-import AudioEngine from "../../audio/AudioEngine" // Import the AudioEngine
+import AudioEngine from "../../audio/AudioEngine"
 import "./HUD.scss"
 
 interface HUDProps {
@@ -12,27 +12,23 @@ interface HUDProps {
 }
 
 const HUD: React.FC<HUDProps> = ({ resetGame, togglePause, isPaused }) => {
-  const { points, playerHP } = useStore() // Include playerHP from the store
+  const { points, playerHP } = useStore()
 
   const handleTogglePause = () => {
     if (isPaused) {
       AudioEngine.resumeBackgroundMusic()
-      togglePause() // Toggle pause first to update the state
+      togglePause()
       setTimeout(() => {
         AudioEngine.playHUDSound("/src/assets/audio/resume.mp3")
-      }, 0) // Play resume sound after state has been updated
+      }, 0)
     } else {
       AudioEngine.pauseBackgroundMusic()
-      togglePause() // Toggle pause first to update the state
+      togglePause()
       setTimeout(() => {
         AudioEngine.playHUDSound("/src/assets/audio/pause.mp3")
-      }, 0) // Play pause sound after state has been updated
+      }, 0)
     }
   }
-
-  useEffect(() => {
-    console.log(playerHP)
-  }, [playerHP])
 
   const getHealthColor = () => {
     if (playerHP >= 5) return "rgb(150,255,150)"
